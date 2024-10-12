@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import * as BookApi from "./BooksAPI";
+import MainPage from "./MainPage";
 
 function App() {
   const bookshelves = [
@@ -42,29 +43,9 @@ function App() {
   }, []);
 
   return (
-    <ol className="books-grid">
-      {
-        books.map((book) => {
-          return (
-            <li key={book.id}>
-              <div className="book">
-                <div className="book-top">
-                  <div className="book-cover" 
-                      style={{ 
-                        width: 128, 
-                        height: 193, 
-                        backgroundImage: `url(${book.imageLink})`
-                      }}>
-                  </div>
-                </div>
-                <div className="book-title">{book.title}</div>
-                <div className="book-authors">{book.authors}</div>
-              </div>
-            </li>
-          );
-        })
-      }
-    </ol>
+    <div className="app">
+      <MainPage bookshelves={bookshelves} books={books} />
+    </div>
   );
 
 }
