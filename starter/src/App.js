@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import * as BookApi from "./BooksAPI";
 import MainPage from "./MainPage";
 
@@ -24,6 +25,25 @@ function App() {
 
   const [books, setBooks] = useState([]);
 
+  const changeShelf = (bookId, shelf) => {
+    console.log(`[App]changeShelf: ${bookId}, ${shelf}`);
+
+    const updateBook = async(bookId, shelf) => {
+      const targetBook = books.find((book) => book.id === bookId);
+      const updatedBook = await BookApi.update(targetBook, shelf);
+      console.log(`Book updated: ${updatedBook}`);
+      // Update book
+      setBooks(books.map(book => {
+        return book.id === bookId ? {
+          ...book,
+          shelf: shelf
+        } : book;
+      }))
+    }
+
+    updateBook(bookId, shelf);
+  }
+
   useEffect(() => {
     const getBooks = async () => {
       const myBooks = await BookApi.getAll();
@@ -42,11 +62,15 @@ function App() {
     getBooks();
   }, []);
 
-  return (
-    <div className="app">
-      <MainPage bookshelves={bookshelves} books={books} />
-    </div>
-  );
+return (
+  <Routes>
+    <Route exact path="/" element={
+      <div className="app">
+        <MainPage bookshelves={bookshelves} books={books} changeShelf={changeShelf}/>
+      </div>
+    }/>
+  </Routes>
+)
 
 }
 

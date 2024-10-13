@@ -1,4 +1,6 @@
-const Bookshelf = ({shelfInfo, books}) =>{
+import Book from './Book';
+
+const Bookshelf = ({shelfInfo, books, bookshelves, changeShelf}) =>{
     return (
         <div className="bookshelf">
             <div className="bookshelf-title">
@@ -10,19 +12,7 @@ const Bookshelf = ({shelfInfo, books}) =>{
                     books.map((book) => {
                     return (
                         <li key={book.id}>
-                        <div className="book">
-                            <div className="book-top">
-                            <div className="book-cover" 
-                                style={{ 
-                                    width: 128, 
-                                    height: 193, 
-                                    backgroundImage: `url(${book.imageLink})`
-                                }}>
-                            </div>
-                            </div>
-                            <div className="book-title">{book.title}</div>
-                            <div className="book-authors">{book.authors}</div>
-                        </div>
+                            <Book book={book} bookshelves={bookshelves} changeShelf={changeShelf} />
                         </li>
                     );
                     })
