@@ -4,18 +4,18 @@ const BookshelfChanger = ({book, bookshelves, changeShelf}) => {
     //console.log(`[BookshelfChanger]bookshelves: ${bookshelves}`);
     const handleChangeShelf = (e) => {
         console.log(`handleChangeShelf: ${e.target.value}`);
-        changeShelf(book.id, e.target.value)
+        changeShelf(book, e.target.value)
     };
     return (
         <div className="book-shelf-changer">
             <select value={book.shelf} onChange={handleChangeShelf}>
-                <option value="none" disabled>
+                <option key={"move"} value="move" disabled>
                 　Move to...
                 </option>
                 {
                     bookshelves.map((shelf) => {
                         return (
-                            <option value={shelf.type}>
+                            <option key={shelf.type} value={shelf.type}>
                                 {book.shelf === shelf.type && "✓"}
                                 {book.shelf !== shelf.type && "　"}
                                 {shelf.name}
@@ -23,7 +23,11 @@ const BookshelfChanger = ({book, bookshelves, changeShelf}) => {
                         );
                     })
                 }
-                <option value="none">　None</option>
+                <option key={"none"} value="none">
+                    {book.shelf === "none" && "✓"}
+                    {book.shelf !== "none" && "　"}
+                    None
+                </option>
             </select>
         </div>
     );
@@ -31,7 +35,7 @@ const BookshelfChanger = ({book, bookshelves, changeShelf}) => {
 
 BookshelfChanger.propTypes = {
     book: PropTypes.object.isRequired,
-    bookshlves: PropTypes.array.isRequired,
+    bookshelves: PropTypes.array.isRequired,
     changeShelf: PropTypes.func.isRequired
 }
 

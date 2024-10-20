@@ -1,12 +1,11 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import Book from './Book';
 
-const Bookshelf = ({shelfInfo, books, bookshelves, changeShelf}) =>{
+const SearchResult = ({bookshelves, books, changeShelf}) => {
+    ///console.log(`[SearchResult]Bookshelves: ${bookshelves}`);
+    //console.log(`[SearchResult]SearchResult: ${books}`);
     return (
-        <div className="bookshelf">
-            <div className="bookshelf-title">
-                <h2>{shelfInfo.name}</h2>
-            </div>
+        <div className="search-books-results">
             <div className="bookshelf-books">
                 <ol className="books-grid">
                 {
@@ -22,13 +21,12 @@ const Bookshelf = ({shelfInfo, books, bookshelves, changeShelf}) =>{
             </div>
         </div>
     );
-}
+};
 
-Bookshelf.propTypes = {
-    shelfInfo: PropTypes.object.isRequired,
-    books: PropTypes.array.isRequired,
+SearchResult.propTypes = {
     bookshelves: PropTypes.array.isRequired,
+    books: PropTypes.array.isRequired,
     changeShelf: PropTypes.func.isRequired
 }
 
-export default Bookshelf;
+export default SearchResult;

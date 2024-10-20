@@ -1,8 +1,9 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import * as BookApi from "./BooksAPI";
 import MainPage from "./MainPage";
+import AddNewBookPage from "./AddNewBookPage";
 
 function App() {
   const bookshelves = [
@@ -25,35 +26,54 @@ function App() {
 
   const [books, setBooks] = useState([]);
 
-  const changeShelf = (bookId, shelf) => {
-    console.log(`[App]changeShelf: ${bookId}, ${shelf}`);
+  const changeShelf = (book, shelf) => {
+    //console.log(`[App]changeShelf: ${book.id}, ${shelf}`);
 
-    const updateBook = async(bookId, shelf) => {
-      const targetBook = books.find((book) => book.id === bookId);
+    const updateBook = async(targetBook, shelf) => {
       const updatedBook = await BookApi.update(targetBook, shelf);
-      console.log(`Book updated: ${updatedBook}`);
+      //console.log(`Book updated: ${JSON.stringify(updatedBook, null, 2)}`);
+      if(updatedBook.error){
+        console.log(`Error: ${updatedBook.error}`);
+        return;
+      }
       // Update book
-      setBooks(books.map(book => {
-        return book.id === bookId ? {
-          ...book,
+      // check if target book is in the list, if it is, update the shelf, otherwise, add it to the list
+      if(!books.find(b => b.id === targetBook.id)){
+        //console.log(`Book not found, adding to the list: ${targetBook.title}`);
+        setBooks([...books, {
+          ...targetBook,
           shelf: shelf
-        } : book;
-      }))
+        }]);
+      } else {
+        //console.log(`Book found, updating the shelf: ${targetBook.title}`);
+        setBooks(books.map(book => {
+          return book.id === targetBook.id ? {
+            ...book,
+            shelf: shelf
+          } : book;
+        }))
+      }
+
     }
 
-    updateBook(bookId, shelf);
+    updateBook(book, shelf);
   }
 
   useEffect(() => {
     const getBooks = async () => {
       const myBooks = await BookApi.getAll();
-      console.log(myBooks);
+      //console.log(JSON.stringify(myBooks, null, 2));
+      if(myBooks.error){
+        console.log(`Error: ${myBooks.error}`);
+        return;
+      }
+
       setBooks(myBooks.map((book) => {
         return {
           id: book.id,
           title: book.title,
-          authors: book.authors.join(", "),
-          imageLink: book.imageLinks["thumbnail"],
+          authors: book.authors ? book.authors.join(", ") : "",
+          imageLink: book.imageLinks ? book.imageLinks["thumbnail"] : "",
           shelf: book.shelf
         }
       }))
@@ -68,6 +88,9 @@ return (
       <div className="app">
         <MainPage bookshelves={bookshelves} books={books} changeShelf={changeShelf}/>
       </div>
+    }/>
+    <Route path="/search" element={
+      <AddNewBookPage bookshelves={bookshelves} books={books} changeShelf={changeShelf}/>
     }/>
   </Routes>
 )
